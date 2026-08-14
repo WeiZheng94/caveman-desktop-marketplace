@@ -1,0 +1,85 @@
+name: Sync Caveman upstream
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "17 3 * * *"
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out compatibility marketplace
+        uses: actions/checkout@v4
+
+      - name: Check out upstream Caveman
+        uses: actions/checkout@v4
+        with:
+          repository: JuliusBrussee/caveman
+          path: _upstream
+
+      - name: Refresh Desktop-safe marketplace
+        shell: bash
+        run: |
+          rm -rf plugin
+          mkdir -p plugin .claude-plugin
+          cp -a _upstream/plugins/caveman/. plugin/
+          cat > .claude-plugin/marketplace.json <<'MARKETPLACE'
+          {
+            "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+            "name": "caveman-desktop-marketplace",
+            "description": "Claude Desktop-compatible mirror of the Caveman plugin.",
+            "owner": {
+              "name": "WeiZheng94",
+              "url": "https://github.com/WeiZheng94"
+            },
+            "plugins": [
+              {
+                "name": "caveman",
+                "description": "Talk like caveman. Reduce output tokens while keeping technical accuracy.",
+                "source": "./plugin",
+                "category": "productivity"
+              }
+            ]
+          }
+          MARKETPLACE
+          cat > README.md <<'README'
+          # Caveman for Claude Desktop
+
+          Claude Desktop-compatible marketplace for [JuliusBrussee/caveman](https://github.com/JuliusBrussee/caveman).
+
+          The upstream marketplace points at the repository root, which contains a top-level bin directory. Claude Desktop's hosted validator rejects those executables. This repository exposes only the Desktop-safe plugin subtree and synchronizes it from upstream every day.
+
+          ## Install
+
+          In Claude Desktop, open **Customize > Plugins > + > Add marketplace > Add from a repository**, then enter:
+
+          https://github.com/WeiZheng94/caveman-desktop-marketplace.git
+
+          Install **caveman** from the new marketplace.
+
+          ## Updates
+
+          The Sync Caveman upstream workflow checks the official repository daily. It can also be run manually from the Actions tab.
+
+          ## Attribution
+
+          Caveman is maintained by Julius Brussee. This repository is only a compatibility mirror and does not claim authorship of Caveman.
+          README
+          rm -rf _upstream
+
+      - name: Commit upstream changes
+        shell: bash
+        run: |
+          git add .claude-plugin plugin README.md
+          if git diff --cached --quiet; then
+            echo "Already synchronized."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "chore: sync Caveman upstream"
+          git push
