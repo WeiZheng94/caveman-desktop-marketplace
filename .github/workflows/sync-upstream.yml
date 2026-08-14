@@ -27,6 +27,17 @@ jobs:
           rm -rf plugin
           mkdir -p plugin .claude-plugin
           cp -a _upstream/plugins/caveman/. plugin/
+          mkdir -p plugin/.claude-plugin
+          cat > plugin/.claude-plugin/plugin.json <<'PLUGIN'
+          {
+            "name": "caveman",
+            "description": "Talk like caveman. Reduce output tokens while keeping technical accuracy.",
+            "author": {
+              "name": "Julius Brussee",
+              "url": "https://github.com/JuliusBrussee"
+            }
+          }
+          PLUGIN
           cat > .claude-plugin/marketplace.json <<'MARKETPLACE'
           {
             "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
