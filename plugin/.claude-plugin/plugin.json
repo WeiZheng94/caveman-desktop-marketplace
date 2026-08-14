@@ -1,0 +1,8 @@
+{
+  "name": "caveman",
+  "description": "Talk like caveman. Reduce output tokens while keeping technical accuracy.",
+  "author": {
+    "name": "Julius Brussee",
+    "url": "https://github.com/JuliusBrussee"
+  }
+}
