@@ -1,0 +1,17 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "caveman-desktop-marketplace",
+  "description": "Claude Desktop-compatible mirror of the Caveman plugin.",
+  "owner": {
+    "name": "WeiZheng94",
+    "url": "https://github.com/WeiZheng94"
+  },
+  "plugins": [
+    {
+      "name": "caveman",
+      "description": "Talk like caveman. Reduce output tokens while keeping technical accuracy.",
+      "source": "./plugin",
+      "category": "productivity"
+    }
+  ]
+}
