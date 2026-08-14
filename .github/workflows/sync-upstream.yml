@@ -27,6 +27,9 @@ jobs:
           rm -rf plugin
           mkdir -p plugin .claude-plugin
           cp -a _upstream/plugins/caveman/. plugin/
+          rm -rf plugin/skills
+          mkdir -p plugin/skills
+          cp -a _upstream/skills/. plugin/skills/
           mkdir -p plugin/.claude-plugin
           cat > plugin/.claude-plugin/plugin.json <<'PLUGIN'
           {
